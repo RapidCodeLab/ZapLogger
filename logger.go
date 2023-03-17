@@ -1,15 +1,56 @@
 package zaplogger
 
 import (
+	"errors"
+
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type ZapLogger struct {
 	logger *zap.Logger
 }
 
-func New() *ZapLogger {
-	return &ZapLogger{}
+func New(c *Config) (*ZapLogger, error) {
+
+	highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.ErrorLevel
+	})
+	generalPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl > zapcore.DebugLevel
+	})
+
+	cores := []zapcore.Core{}
+
+	serviceIDField := zap.Field{
+		Key:    "service",
+		Type:   zapcore.StringType,
+		String: c.ServiceID,
+	}
+
+	if c.FileLoggerEnbaled {
+		core := buildFileCore(highPriority, c)
+		core = core.With([]zap.Field{serviceIDField})
+		cores = append(cores, core)
+	}
+
+	if c.StreamLoggerEnabled {
+		core := buildStreamCore(generalPriority, c)
+		core = core.With([]zap.Field{serviceIDField})
+		cores = append(cores, core)
+	}
+
+	if len(cores) < 1 {
+		return nil, errors.New("no one logging core enabled")
+	}
+
+	tee := zapcore.NewTee(
+		cores...,
+	)
+
+	return &ZapLogger{
+		logger: zap.New(tee),
+	}, nil
 }
 
 func (l *ZapLogger) Infof(template string, args ...any) {
