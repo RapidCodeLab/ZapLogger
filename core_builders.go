@@ -1,7 +1,11 @@
 package zaplogger
 
 import (
+	"bufio"
 	"context"
+	"io"
+	"io/ioutil"
+	"os"
 	"strings"
 	"time"
 
@@ -12,10 +16,26 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+func buildStdOutCore(
+	le zap.LevelEnablerFunc,
+) zapcore.Core {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
+
+	w := bufio.NewWriter(os.Stdout)
+	ws := zapcore.AddSync(w)
+
+	return zapcore.NewCore(
+		zapcore.NewConsoleEncoder(encoderConfig),
+		ws,
+		le,
+	)
+}
+
 func buildFileCore(
 	le zap.LevelEnablerFunc,
-	c *Config) zapcore.Core {
-
+	c *Config,
+) zapcore.Core {
 	fw := zapcore.AddSync(&lumberjack.Logger{
 		Filename:   c.FileLoggerPath,
 		MaxSize:    c.FileLoggerMaxSize,
@@ -35,8 +55,8 @@ func buildFileCore(
 
 func buildStreamCore(
 	le zap.LevelEnablerFunc,
-	c *Config) zapcore.Core {
-
+	c *Config,
+) zapcore.Core {
 	sharedTransport := &kafka.Transport{}
 
 	if c.StreamLoggerUsername != "" &&
