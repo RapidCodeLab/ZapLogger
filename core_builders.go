@@ -1,7 +1,6 @@
 package zaplogger
 
 import (
-	"bufio"
 	"context"
 	"os"
 	"strings"
@@ -17,11 +16,10 @@ import (
 func buildStdOutCore(
 	le zap.LevelEnablerFunc,
 ) zapcore.Core {
-	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig := zap.NewDevelopmentEncoderConfig()
 	encoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
 
-	w := bufio.NewWriter(os.Stdout)
-	ws := zapcore.AddSync(w)
+	ws := zapcore.Lock(os.Stdout)
 
 	return zapcore.NewCore(
 		zapcore.NewConsoleEncoder(encoderConfig),
