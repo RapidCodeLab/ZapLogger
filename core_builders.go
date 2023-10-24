@@ -3,8 +3,6 @@ package zaplogger
 import (
 	"bufio"
 	"context"
-	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 	"time"
