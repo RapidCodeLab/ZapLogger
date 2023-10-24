@@ -2,8 +2,8 @@ package zaplogger
 
 type Config struct {
 	ServiceID                string
-	StdOutLoggerEnbaled      bool
-	FileLoggerEnbaled        bool
+	StdOutLoggerEnabled      bool
+	FileLoggerEnabled        bool
 	FileLoggerPath           string
 	FileLoggerMaxSize        int // megabytes
 	FileLoggerMaxBackups     int // amount

@@ -28,12 +28,12 @@ func New(c *Config) (*ZapLogger, error) {
 		String: c.ServiceID,
 	}
 
-	if c.StdOutLoggerEnbaled {
+	if c.StdOutLoggerEnabled {
 		core := buildStdOutCore(generalPriority)
 		core = core.With([]zap.Field{serviceIDField})
 		cores = append(cores, core)
 	}
-	if c.FileLoggerEnbaled {
+	if c.FileLoggerEnabled {
 		core := buildFileCore(highPriority, c)
 		core = core.With([]zap.Field{serviceIDField})
 		cores = append(cores, core)
