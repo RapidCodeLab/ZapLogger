@@ -59,25 +59,25 @@ func New(c *Config) (*ZapLogger, error) {
 }
 
 func (l *ZapLogger) Infof(template string, args ...any) {
-	l.logger.Sugar().Infof(template, args)
+	l.logger.Sugar().Infof(template, args...)
 }
 
 func (l *ZapLogger) Debugf(template string, args ...any) {
-	l.logger.Sugar().Debugf(template, args)
+	l.logger.Sugar().Debugf(template, args...)
 }
 
 func (l *ZapLogger) Warnf(template string, args ...any) {
-	l.logger.Sugar().Warnf(template, args)
+	l.logger.Sugar().Warnf(template, args...)
 }
 
 func (l *ZapLogger) Errorf(template string, args ...any) {
-	l.logger.Sugar().Errorf(template, args)
+	l.logger.Sugar().Errorf(template, args...)
 }
 
 func (l *ZapLogger) Fatalf(template string, args ...any) {
-	l.logger.Sugar().Fatalf(template, args)
+	l.logger.Sugar().Fatalf(template, args...)
 }
 
 func (l *ZapLogger) Panicf(template string, args ...any) {
-	l.logger.Sugar().Panicf(template, args)
+	l.logger.Sugar().Panicf(template, args...)
 }
